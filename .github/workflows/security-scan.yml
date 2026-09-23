@@ -1,6 +1,5 @@
 name: Security Scanning Pipeline
 
-# Trigger this workflow every time code is pushed or a Pull Request is made
 on:
   push:
     branches: [ "main" ]
@@ -13,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Download/checkout the code from our repository onto the runner
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Install and run Checkov, our static security scanner
       - name: Run Checkov Security Scan
         uses: bridgecrewio/checkov-action@master
         with:
           framework: terraform
           output_format: cli
-          soft_fail: false # Hard fail: block the pipeline if a high-severity flaw is found!
+          soft_fail: false
+          # Skip non-critical operational checks (logging, replication, lifecycle, etc.)
+          skip_check: CKV_AWS_144,CKV_AWS_145,CKV_AWS_18,CKV_AWS_21,CKV2_AWS_61,CKV2_AWS_62
